@@ -1,0 +1,10 @@
+Add additional functionality to the Single File Components demo we created in class.
+
+Add an additional media type for Album with title, artist, and track count. Add some albums to the collection.
+Create a bag (i.e. cart) model and component to add LibraryItems. Make sure the user can add and remove items from the bag. You will probably want to store the bag collection in the app or in another parent collection that manages both the library and the bag.
+Your LibraryItems will need a button to add that item to your bag. You can do with with events (this.$emit) or dependency injection (passing in the bag's addItem method to the LibraryItem).
+When the user is done adding items to their bag, there should be a single checkout button that will mark all of the books in their bag as checked out (this should also update the status in the library collection). The checkout button should also empty the bag.
+Extra Credit
+Add quantities to the LibraryItem (not the book or bag items) and modify the checkin/out methods to update the quantity appropriately. Don't let the user add/checkout if there are no copies available. (Up to 2 points)
+Add a name field to the bag to keep track of who checked out the book. During checkout, store that name with the checked out copies (an array or collection). Upon clicking a button (or some other event) in the library, show who each copy of the book is checked out to. (Up to 5 points)
+Turn in a zip file or GitHub repo. DO NOT include the node_modules folder.
