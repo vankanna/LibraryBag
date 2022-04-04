@@ -49,26 +49,75 @@ function Book(title, pages){
     this.pages = pages;
 }
 
-// or ES6 syntactic sugar (these are not really classes in the traditional sense)
-class Movie {
-    title = '';
-    runtime = 0;
+// // or ES6 syntactic sugar (these are not really classes in the traditional sense)
+// class Movie {
+//     title = '';
+//     runtime = 0;
 
-    constructor(title, runtime){
-        this.title = title;
-        this.runtime = runtime;
+//     constructor(title, runtime){
+//         this.title = title;
+//         this.runtime = runtime;
+//     }
+// }
+
+// class Album {
+//     title = '';
+//     artist = '';
+//     trackCount = 0;
+//     constructor(title, artist, trackCount) {
+//         this.title = title;
+//         this.artist = artist;
+//         this.trackCount = trackCount;
+//     }
+// }
+
+class ItunesItem {
+    artistName = '';
+    artworkUrl100 = '';
+    constructor(artistName, artworkUrl100) {
+        this.artistName = artistName;
+        this.artworkUrl100 = artworkUrl100;
     }
 }
 
-class Album {
+class Song extends ItunesItem {
+    type = "song"
     title = '';
-    artist = '';
-    trackCount = 0;
-    constructor(title, artist, trackCount) {
-        this.title = title;
-        this.artist = artist;
-        this.trackCount = trackCount;
+    collectionName = '';
+    constructor(artistName, artworkUrl100, trackName, collectionName) {
+        super(artistName, artworkUrl100);
+        this.title = trackName;
+        this.collectionName = collectionName;
     }
 }
 
-export { LibraryItemDecorator, Album, Book, Movie };
+class FeatureMovie extends ItunesItem {
+    type = "feature movie";
+    title = '';
+    description = '';
+    constructor(artistName, artworkUrl100, trackName, shortOrLongDescription) {
+        super(artistName, artworkUrl100);
+        this.title = trackName;
+        this.description = shortOrLongDescription;
+    }
+}
+
+class Podcast extends ItunesItem {
+    type = "podcast";
+    title = '';
+    constructor(artistName, artworkUrl100, trackName) {
+        super(artistName, artworkUrl100);
+        this.title = trackName;
+    }
+}
+
+class Audiobook extends ItunesItem {
+    type = "audiobook";
+    title = '';
+    constructor(artistName, artworkUrl100, collectionName) {
+        super(artistName, artworkUrl100);
+        this.title = collectionName;
+    }
+}
+
+export { LibraryItemDecorator, Song, FeatureMovie, Podcast, Audiobook, Book };

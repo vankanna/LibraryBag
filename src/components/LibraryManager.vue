@@ -1,5 +1,11 @@
 <template>
 <div>
+  <div class="search">
+    <form id="searchHolder"  @submit.prevent="searchForMedia">
+            <input id="searchTerm" v-model="searchTerm" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+            <button type="submit" class="btn btn-outline-success my-2 my-sm-0">Search</button>
+      </form>
+  </div>
   <div class="library">
   <h3>Library</h3>
   <div class="card">
@@ -22,7 +28,7 @@ import LibraryItem from "@/components/LibraryItem";
 import BagItem from "@/components/BagItem";
 
 import BaseCollection from "@/models/BaseCollection";
-import {LibraryItemDecorator, Album, Book, Movie} from "@/models/LibraryItems";
+import {LibraryItemDecorator, Song, FeatureMovie, Podcast, Audiobook, Book} from "@/models/LibraryItems";
 import BagItemObject from "@/models/BagItem";
 export default {
   name: "LibraryManager",
@@ -30,27 +36,30 @@ export default {
   data() {
 
     const library = new BaseCollection();
-    library.addItem(new LibraryItemDecorator(new Book('Interaction Design', 234)));
     library.addItem(new LibraryItemDecorator(new Book('Learn Vue', 345)));
-    library.addItem(new LibraryItemDecorator(new Movie('The Muppets', 107)));
-    library.addItem(new LibraryItemDecorator(new Movie('Strange Brew', 97)));
-    library.addItem(new LibraryItemDecorator(new Album('Lilac', 'IU', 12)));
-    library.addItem(new LibraryItemDecorator(new Album('Pallete', 'IU', 11)));
+    // library.addItem(new LibraryItemDecorator(new Movie('The Muppets', 107)));
+    // library.addItem(new LibraryItemDecorator(new Movie('Strange Brew', 97)));
+    // library.addItem(new LibraryItemDecorator(new Album('Lilac', 'IU', 12)));
+    // library.addItem(new LibraryItemDecorator(new Album('Pallete', 'IU', 11)));
 
     const bag = new BaseCollection();
 
     return {
       library: library,
       bag: bag,
+      searchTerm: '',
     }
   },
+
   methods: {
     addItemToBag: function(item) {
+      console.log(item.title)
       this.bag.addItem(new BagItemObject(item.title))
       console.log(item)
     },
 
     updateLibrary: function(item) {
+      item.remove();
       const result = this.library.find( ({ title }) => title === item.title );
       result.checkIn();
       console.log("what")
@@ -65,8 +74,64 @@ export default {
           this.library[i].checkOut();
         }
       }
+    },
+
+    searchForMedia: async function() {
+      console.log("its working")
+      // GET request using fetch with error handling
+      fetch( `https://itunes.apple.com/search?term=${this.searchTerm}&limit=10` )
+        .then( function( response ){
+            if( response.status != 200 ){
+              console.log("EREORRRR")
+                throw response.status;
+            }else{
+              console.log("SUC")
+                return response.json();
+            }
+        }.bind(this))
+        .then( function( data ){
+            this.fetchResponse = data;
+            console.log("WOWOW")
+            console.log(data)
+            this.processData(data)
+
+        }.bind(this))
+        .catch( function( error ){
+            this.fetchError = error;
+        }.bind(this));
+
+
+    },
+    
+    processData: function(data) {
+      if(!data && !data.results) {
+        throw new Error("No Data Recieved");
+      } else {
+        console.log("are we looping??")
+        console.log(data.results)
+        for (var i = 0; i < data.results.length; i++) {
+          var Iitem = data.results[i];
+          console.log("WERERER")
+          if (Iitem.kind === 'song') {
+            console.log('song detected')
+            console.log(Iitem)
+            this.library.addItem(new LibraryItemDecorator(new Song(Iitem.artistName, Iitem.artworkUrl100, Iitem.trackName, Iitem.collectionName)));
+          } else if (Iitem.kind === 'feature-movie'){
+            this.library.addItem(new LibraryItemDecorator(new FeatureMovie(Iitem.artistName, Iitem.artworkUrl100, Iitem.trackName, Iitem.shortDescription || Iitem.longDescription)));
+          }  else if (Iitem.kind === 'podcast'){
+            this.library.addItem(new LibraryItemDecorator(new Podcast(Iitem.artistName, Iitem.artworkUrl100, Iitem.trackName)));
+          } else if (Iitem.wrapperType === 'audiobook'){
+            this.library.addItem(new LibraryItemDecorator(new Audiobook(Iitem.artistName, Iitem.artworkUrl100, Iitem.collectionName)));
+          } else {
+            console.log('NO MATCH')
+            console.log(Iitem)
+          }
+        }
+      console.log('library')
+      console.log(this.library)
+      }
     }
-  }
+  },
 
 }
 </script>

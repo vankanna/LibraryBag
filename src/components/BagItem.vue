@@ -20,7 +20,6 @@ export default {
   methods: {
     removeItem(item) {
       this.$emit("updateLibrary", item);
-      item.remove();
     }
   }
 }
