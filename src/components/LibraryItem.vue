@@ -39,8 +39,7 @@ export default {
     }
   },
   methods: {
-    addToBag(item) {
-      item.inBag();
+    addToBag() {
       this.$emit("addToBag", this.item);
     },
   },

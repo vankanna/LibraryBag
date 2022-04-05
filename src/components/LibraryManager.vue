@@ -35,6 +35,8 @@ export default {
   components: {LibraryItem, BagItem},
   data() {
 
+    // When I make library item here the component it is attached to will update properly
+    // and when i add to bag the status will show in the component on the UI
     const library = new BaseCollection();
     library.addItem(new LibraryItemDecorator(new Book('Learn Vue', 345)));
     // library.addItem(new LibraryItemDecorator(new Movie('The Muppets', 107)));
@@ -53,6 +55,7 @@ export default {
 
   methods: {
     addItemToBag: function(item) {
+      item.inBag();
       console.log(item.title)
       this.bag.addItem(new BagItemObject(item.title))
       console.log(item)
@@ -62,8 +65,6 @@ export default {
       item.remove();
       const result = this.library.find( ({ title }) => title === item.title );
       result.checkIn();
-      console.log("what")
-      console.log(result)
     },
 
     checkoutBagItems: function() {
@@ -102,19 +103,15 @@ export default {
 
 
     },
-    
-    processData: function(data) {
-      if(!data && !data.results) {
+    // When I add library items here, the components will not show new status
+    // changes when i add to bag and remove from bag?
+    processData: function(itunesData) {
+      if(!itunesData && !itunesData.results) {
         throw new Error("No Data Recieved");
       } else {
-        console.log("are we looping??")
-        console.log(data.results)
-        for (var i = 0; i < data.results.length; i++) {
-          var Iitem = data.results[i];
-          console.log("WERERER")
+        for (var i = 0; i < itunesData.results.length; i++) {
+          var Iitem = itunesData.results[i];
           if (Iitem.kind === 'song') {
-            console.log('song detected')
-            console.log(Iitem)
             this.library.addItem(new LibraryItemDecorator(new Song(Iitem.artistName, Iitem.artworkUrl100, Iitem.trackName, Iitem.collectionName)));
           } else if (Iitem.kind === 'feature-movie'){
             this.library.addItem(new LibraryItemDecorator(new FeatureMovie(Iitem.artistName, Iitem.artworkUrl100, Iitem.trackName, Iitem.shortDescription || Iitem.longDescription)));
