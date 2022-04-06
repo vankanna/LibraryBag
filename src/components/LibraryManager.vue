@@ -28,7 +28,7 @@ import LibraryItem from "@/components/LibraryItem";
 import BagItem from "@/components/BagItem";
 
 import BaseCollection from "@/models/BaseCollection";
-import {LibraryItemDecorator, Song, FeatureMovie, Podcast, Audiobook, Book} from "@/models/LibraryItems";
+import {LibraryItemDecorator, Song, FeatureMovie, Podcast, Audiobook } from "@/models/LibraryItems";
 import BagItemObject from "@/models/BagItem";
 export default {
   name: "LibraryManager",
@@ -38,7 +38,7 @@ export default {
     // When I make library item here the component it is attached to will update properly
     // and when i add to bag the status will show in the component on the UI
     const library = new BaseCollection();
-    library.addItem(new LibraryItemDecorator(new Book('Learn Vue', 345)));
+    //library.addItem(new LibraryItemDecorator(new Book('Learn Vue', 345)));
     // library.addItem(new LibraryItemDecorator(new Movie('The Muppets', 107)));
     // library.addItem(new LibraryItemDecorator(new Movie('Strange Brew', 97)));
     // library.addItem(new LibraryItemDecorator(new Album('Lilac', 'IU', 12)));
