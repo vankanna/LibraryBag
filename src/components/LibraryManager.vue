@@ -2,8 +2,14 @@
 <div>
   <div class="search">
     <form id="searchHolder"  @submit.prevent="searchForMedia">
+        <v-row>
+          <v-col >
             <input id="searchTerm" v-model="searchTerm" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+          </v-col>
+          <v-col >  
             <button type="submit" class="btn btn-outline-success my-2 my-sm-0">Search</button>
+          </v-col>
+        </v-row>
       </form>
   </div>
   <div class="library">
@@ -78,22 +84,17 @@ export default {
     },
 
     searchForMedia: async function() {
-      console.log("its working")
       // GET request using fetch with error handling
       fetch( `https://itunes.apple.com/search?term=${this.searchTerm}&limit=10` )
         .then( function( response ){
             if( response.status != 200 ){
-              console.log("EREORRRR")
                 throw response.status;
             }else{
-              console.log("SUC")
                 return response.json();
             }
         }.bind(this))
         .then( function( data ){
             this.fetchResponse = data;
-            console.log("WOWOW")
-            console.log(data)
             this.processData(data)
 
         }.bind(this))
@@ -103,8 +104,7 @@ export default {
 
 
     },
-    // When I add library items here, the components will not show new status
-    // changes when i add to bag and remove from bag?
+   
     processData: function(itunesData) {
       if(!itunesData && !itunesData.results) {
         throw new Error("No Data Recieved");
@@ -120,12 +120,9 @@ export default {
           } else if (Iitem.wrapperType === 'audiobook'){
             this.library.addItem(new LibraryItemDecorator(new Audiobook(Iitem.artistName, Iitem.artworkUrl100, Iitem.collectionName)));
           } else {
-            console.log('NO MATCH')
             console.log(Iitem)
           }
         }
-      console.log('library')
-      console.log(this.library)
       }
     }
   },
